@@ -1,7 +1,7 @@
 import { Button, Input } from "@material-tailwind/react";
 import { useState } from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import ArrowAsset from "../assets/ArrowAsset";
 import CopyAsset from "../assets/CopyAsset";
 import InstagramAsset from "../assets/InstagramAsset";
@@ -11,9 +11,17 @@ import Number1 from "../assets/Number1";
 import Number2 from "../assets/Number2";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { useMutation } from "react-query";
+import { performanceUpdate } from "../api";
+
+const FRONT_URL = "https://sikkkkkw.github.io/YJ4-Project";
 
 export default function Home() {
-  const navigate = useNavigate();
+  const url = new URL(window.location.href);
+  const param = new URLSearchParams(url.search);
+  const id = param.get("id");
+  console.log(id);
+  // const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
   const hashtags = "#영진직업전문학교 #취업률1위";
 
@@ -23,9 +31,18 @@ export default function Home() {
     formState: { errors },
   } = useForm({ mode: "onChange" });
 
-  // const { data, mutate } = useMutation(performanceUpdate);
+  const { mutate } = useMutation(performanceUpdate, {
+    onSuccess: (data) => {
+      if (data.ok === true) {
+        window.location.href = `${FRONT_URL}/eventpage.html`;
+      }
+      if (data.ok === false) {
+        alert("이미 완료된 URL 입니다.");
+      }
+    },
+  });
   const onSubmit = (data) => {
-    console.log(data);
+    mutate({ ...data, id });
   };
 
   return (
@@ -147,6 +164,7 @@ export default function Home() {
                             message: "인스타그램 URL을 입력해 주셔야 합니다!",
                           },
                         })}
+                        defaultValue="www.instagram.com"
                         label="인스타그램 URL"
                         color="red"
                         className="focus:ring-0"
