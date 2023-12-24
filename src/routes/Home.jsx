@@ -164,7 +164,6 @@ export default function Home() {
                             message: "인스타그램 URL을 입력해 주셔야 합니다!",
                           },
                         })}
-                        defaultValue="www.instagram.com"
                         label="인스타그램 URL"
                         color="red"
                         className="focus:ring-0"
